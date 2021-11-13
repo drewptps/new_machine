@@ -7,12 +7,12 @@ if [ "$(whoami)" != root ]; then
 fi
 
 #Add user drew
-echo "Adding user drew..."
-sleep 1s
-useradd --create-home --shell bash drew
-echo "Enter password for account drew:"
-passwd drew
-usermod -aG sudo drew
+# echo "Adding user drew..."
+# sleep 1s
+# useradd --create-home --shell /usr/bin/bash drew
+# echo "Enter password for account drew:"
+# passwd drew
+# usermod -aG sudo drew
 
 #Remove snapd
 if dpkg -l snapd &> /dev/null; then
@@ -47,11 +47,11 @@ elif [ "$(cat /etc/timezone)" = US/Eastern ]; then
 fi
 
 #Import SSH keys
-if dpkg -l ssh-import-gh &> /dev/null; then
+if dpkg -l ssh-import-id-gh &> /dev/null; then
     echo "Importing SSH keys from GitHub..."
     sleep 1s
-    ssh-import-gh petipas
-elif ! dpkg -l ssh-import-gh &> /dev/null; then
+    ssh-import-id-gh petipas
+elif ! dpkg -l ssh-import-id-gh &> /dev/null; then
     echo "Skipping SSH key import..."
 fi
 
@@ -60,6 +60,7 @@ if [ -f "/etc/default/motd-news" ]; then
     echo "Removing motd news..."
     sleep 1s
     sed 's/ENABLED=1/ENABLED=0/' /etc/default/motd-news
+    systemctl restart motd-news
 else
     echo "Skipping motd-news..."
 fi
