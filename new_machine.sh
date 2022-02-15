@@ -6,28 +6,50 @@ if [ "$(whoami)" != root ]; then
     exit 1
 fi
 
+
 #Add user drew
-# echo "Adding user drew..."
-# sleep 1s
-# useradd --create-home --shell /usr/bin/bash drew
+if id "drew" &>/dev/null; then
+	echo "Adding user drew..."
+	sleep 1s
+	useradd --create-home --shell /usr/bin/bash drew
+	passwd -e drew
+	usermod -aG sudo drew
+else
+	echo "User drew already exists"
+fi
+
+#Add group petipas
+if [ $(getent group petipas) ]; then
+	echo "Group petipas already exists"
+else
+	echo "Adding group petipas..."
+	groupadd petipas
+fi
+
+#Add drew to petipas, delete group drew, changes permissions of /home/drew
+usermod -g petipas
+groupdel drew
+chgrp -R petipas /home/drew/
+
+
 # echo "Enter password for account drew:"
 # passwd drew
 # usermod -aG sudo drew
 
 #Remove snapd
-if dpkg -l snapd &> /dev/null; then
+if [ dpkg -l snapd &> /dev/null ]; then
     echo "Removing snapd..."
     sleep 1s
     systemctl stop snapd
     apt remove --purge --assume-yes snapd gnome-software-plugin-snap
     rm -rf ~/snap/
     rm -rf /var/cache/snapd/
-elif ! dpkg -l snapd &> /dev/null; then
+elif ! [ dpkg -l snapd &> /dev/null] ; then
     echo "Skipping snapd... does not exist"
 fi
 
 #Remove cloud-init
-if dpkg -l cloud-init &> /dev/null; then
+if [ dpkg -l cloud-init &> /dev/null ]; then
     echo "Removing cloud-init..."
     sleep 1s
     apt purge cloud-init -y
