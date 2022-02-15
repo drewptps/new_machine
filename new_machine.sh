@@ -27,9 +27,25 @@ else
 fi
 
 #Add drew to petipas, delete group drew, changes permissions of /home/drew
-usermod -g petipas drew
-groupdel drew
+if [ $(id -gn drew) != petipas ]; then
+	echo "Changing primary group for drew to petipas"
+	usermod -g petipas drew
+else
+	echo "Primary group for drew already is petipas"
+fi
+
+#Change permissions of /home/drew
 chgrp -R petipas /home/drew/
+
+#Delete group drew
+if [ $(getent group drew) ]; then
+	echo "Deleting group drew"
+	groupdel drew &> /dev/null
+else
+	echo "Group drew already doesn't exist"
+fi
+
+
 
 #Remove snapd
 if [ dpkg -l snapd &> /dev/null ]; then
@@ -39,7 +55,7 @@ if [ dpkg -l snapd &> /dev/null ]; then
     apt remove --purge --assume-yes snapd gnome-software-plugin-snap
     rm -rf ~/snap/
     rm -rf /var/cache/snapd/
-elif ![ dpkg -l snapd &> /dev/null] ; then
+else
     echo "Skipping snapd... does not exist"
 fi
 
@@ -50,7 +66,7 @@ if [ dpkg -l cloud-init &> /dev/null ]; then
     apt purge cloud-init -y
     rm -rf /etc/cloud
     rm -rf /var/lib/cloud/
-elif ![dpkg -l cloud-init &> /dev/null] ; then
+else
     echo "Skipping cloud-init... does not exist."
 fi
 
@@ -59,7 +75,7 @@ if [ "$(cat /etc/timezone)" != US/Eastern ]; then
     echo "Setting timezone US/Eastern..."
     sleep 1s
     timedatectl set-timezone US/Eastern
-elif [ "$(cat /etc/timezone)" = US/Eastern ]; then
+else
     echo "Skipping timezone... already US/Eastern."
 fi
 
@@ -68,7 +84,7 @@ if [ dpkg -l ssh-import-id-gh &> /dev/null ]; then
     echo "Importing SSH keys from GitHub..."
     sleep 1s
     ssh-import-id-gh petipas
-elif ![ dpkg -l ssh-import-id-gh &> /dev/null ]; then
+else
     echo "Skipping SSH key import..."
 fi
 
