@@ -15,12 +15,12 @@ if ![ id drew &>/dev/null ]; then
 	passwd -e drew
 	usermod -aG sudo drew
 else
-	echo "User drew already exists"
+	echo "Skipping useradd... user drew already exists"
 fi
 
 #Add group petipas
 if [ $(getent group petipas) ]; then
-	echo "Group petipas already exists"
+	echo "Skipping groupadd... group petipas already exists"
 else
 	echo "Adding group petipas..."
 	groupadd petipas
@@ -31,18 +31,23 @@ if [ $(id -gn drew) != petipas ]; then
 	echo "Changing primary group for drew to petipas"
 	usermod -g petipas drew
 else
-	echo "Primary group for drew already is petipas"
+	echo "Skipping primary group... drew's primary group is already petipas"
 fi
 
 #Change permissions of /home/drew
-chgrp -R petipas /home/drew/
+if [ $(stat -c %G /home/drew) != petipas ]; then
+	echo "Changing group for /home/drew to petipas"
+	chgrp -R petipas /home/drew
+else
+	echo "Skipping permissions... /home/drew already belongs to group petipas"
+fi
 
 #Delete group drew
 if [ $(getent group drew) ]; then
 	echo "Deleting group drew"
 	groupdel drew &> /dev/null
 else
-	echo "Group drew already doesn't exist"
+	echo "Skipping groupdel... group drew doesn't exist"
 fi
 
 
