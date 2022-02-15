@@ -8,7 +8,7 @@ fi
 
 
 #Add user drew
-if [ id "drew" &>/dev/null ]; then
+if ![ id drew &>/dev/null ]; then
 	echo "Adding user drew..."
 	sleep 1s
 	useradd --create-home --shell /usr/bin/bash drew
