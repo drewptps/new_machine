@@ -31,11 +31,6 @@ usermod -g petipas drew
 groupdel drew
 chgrp -R petipas /home/drew/
 
-
-# echo "Enter password for account drew:"
-# passwd drew
-# usermod -aG sudo drew
-
 #Remove snapd
 if [ dpkg -l snapd &> /dev/null ]; then
     echo "Removing snapd..."
@@ -78,10 +73,10 @@ elif ![ dpkg -l ssh-import-id-gh &> /dev/null ]; then
 fi
 
 #Remove news from motd
-if [ -f "/etc/default/motd-news" ]; then
+if [ -f "/etc/default/motd-news" &> /dev/null ]; then
     echo "Removing motd news..."
     sleep 1s
-    sed 's/ENABLED=1/ENABLED=0/' /etc/default/motd-news
+    sed 's/ENABLED=1/ENABLED=0/' /etc/default/motd-news &> /dev/null
     systemctl restart motd-news
 else
     echo "Skipping motd-news..."
