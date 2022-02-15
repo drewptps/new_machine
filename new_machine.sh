@@ -97,7 +97,7 @@ fi
 if [ -f "/etc/default/motd-news" &> /dev/null ]; then
     echo "Removing motd news..."
     sleep 1s
-    sed 's/ENABLED=1/ENABLED=0/' /etc/default/motd-news &> /dev/null
+    sed -n 's/ENABLED=1/ENABLED=0/' /etc/default/motd-news
     systemctl restart motd-news
 else
     echo "Skipping motd-news..."
