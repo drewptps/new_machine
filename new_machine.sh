@@ -8,7 +8,7 @@ fi
 
 
 #Add user drew
-if id "drew" &>/dev/null; then
+if [ id "drew" &>/dev/null ]; then
 	echo "Adding user drew..."
 	sleep 1s
 	useradd --create-home --shell /usr/bin/bash drew
@@ -44,7 +44,7 @@ if [ dpkg -l snapd &> /dev/null ]; then
     apt remove --purge --assume-yes snapd gnome-software-plugin-snap
     rm -rf ~/snap/
     rm -rf /var/cache/snapd/
-elif ! [ dpkg -l snapd &> /dev/null] ; then
+elif ![ dpkg -l snapd &> /dev/null] ; then
     echo "Skipping snapd... does not exist"
 fi
 
@@ -55,7 +55,7 @@ if [ dpkg -l cloud-init &> /dev/null ]; then
     apt purge cloud-init -y
     rm -rf /etc/cloud
     rm -rf /var/lib/cloud/
-elif ! dpkg -l cloud-init &> /dev/null; then
+elif ! [dpkg -l cloud-init &> /dev/null] ; then
     echo "Skipping cloud-init... does not exist."
 fi
 
@@ -69,11 +69,11 @@ elif [ "$(cat /etc/timezone)" = US/Eastern ]; then
 fi
 
 #Import SSH keys
-if dpkg -l ssh-import-id-gh &> /dev/null; then
+if [ dpkg -l ssh-import-id-gh &> /dev/null ]; then
     echo "Importing SSH keys from GitHub..."
     sleep 1s
     ssh-import-id-gh petipas
-elif ! dpkg -l ssh-import-id-gh &> /dev/null; then
+elif ![ dpkg -l ssh-import-id-gh &> /dev/null ]; then
     echo "Skipping SSH key import..."
 fi
 
