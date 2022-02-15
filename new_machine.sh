@@ -27,7 +27,7 @@ else
 fi
 
 #Add drew to petipas, delete group drew, changes permissions of /home/drew
-usermod -g petipas
+usermod -g petipas drew
 groupdel drew
 chgrp -R petipas /home/drew/
 
